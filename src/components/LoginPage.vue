@@ -31,10 +31,10 @@ export default {
         service: 'moodle_mobile_app'
       }), {
         method: 'GET',
-        mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
+          'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Accept, Origin, Authorization'
         }
       });
 
