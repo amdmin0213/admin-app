@@ -31,7 +31,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Accept, Origin, Authorization'
+          'Access-Control-Allow-Headers': 'Content-Type'
         },
         body:  JSON.stringify(data)
       });
