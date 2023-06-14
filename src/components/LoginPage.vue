@@ -1,11 +1,9 @@
 <template>
   <div>
     <form action="submit">
-      <label for="username">Username</label>
-      <input v-model="username" type="text">
-      <label for="password">password</label>
-      <input v-model="password" type="password">
-      <button @click.prevent="login">Login</button>
+      <label for="username">Token</label>
+      <input v-model="token" type="password">
+      <button @click.prevent="login">Display cources</button>
     </form>
     
     
@@ -17,25 +15,25 @@ export default {
   name: 'LoginPage',
   data() {
     return {
-      username: "",
-      password: "" 
+      token: ""
     }
   },
   methods: {
     async login(){
+      const data = {
+        wstoken: this.token,
+        wsfunction: "core_course_get_courses",
+        moodlewsrestformat: 'json'
+      }
 
-      const response = await fetch("https://learn.myllama.co/login/token.php?" + new URLSearchParams({
-        servise: 'test_ws',
-        username: this.username, 
-        password: this.password, 
-        service: 'moodle_mobile_app'
-      }), {
-        method: 'GET',
+      const response = await fetch("https://learn.myllama.co/webservice/rest/server.php", {
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
           'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Accept, Origin, Authorization'
-        }
+        },
+        body:  JSON.stringify(data)
       });
 
       console.log(response);
