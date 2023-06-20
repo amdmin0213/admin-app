@@ -20,7 +20,11 @@ const moodleService = {
 
   async getCourseData() {
     try {
-      const response = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_enrol_get_users_courses&wstoken=${this.token}`);
+      const response = await axios.post(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_enrol_get_users_courses&wstoken=${this.token}&userid=28`, {
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
       const courses = response.data;
       let totalParticipants = 0;
 

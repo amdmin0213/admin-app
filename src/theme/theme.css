@@ -1,0 +1,9 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.orange-bg {
+  background-color: rgb(244, 116, 49);
+}
