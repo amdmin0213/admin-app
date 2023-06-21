@@ -3,19 +3,20 @@
     <div>
       <img class="login-img" src="../assets/LoginPageLogo.png">
     </div>
-    <div>
+    <div class="form">
       <h1>Welcome!</h1>
       <p>Please enter your username and password</p>
       <input v-model="username" placeholder="Enter your username" type="text">
-      <input v-model="password" placeholder="Enter your password" type="text">
+      <input v-model="password" placeholder="Enter your password" type="password">
     </div>
     <div class="buttons">
       <button @click="login" :disabled="!username && !password" class="sign-in" type="submit">Sign in</button>
-      <hr>
+      <!-- <hr>
+      TODO: need to implement sign in with google.
       <button class="g-sign-in" type="submit">
         <img class="button-icon" src="../assets/googleIcon.jpg">
         Continue with google
-      </button>
+      </button> -->
     </div>
   </div>
 </template>
@@ -33,11 +34,11 @@ export default {
   },
   methods: {
     async login() {
-      const success = await moodleService.login(this.username, this.password);
-      if (success) {
+      const resp = await moodleService.login(this.username, this.password);
+      if (resp) {
         this.$router.push('/dashboard');
       } else {
-        // handle failed login
+        console.error(resp);
       }
     },
   },
@@ -60,12 +61,12 @@ export default {
   margin-bottom: 40px;
 }
 
-input {
+.form input {
   background-color: #F4F5F6;
   padding: 8px 12px;
 }
 
-p {
+.form p {
   font-size: 0.85rem;
 }
 
@@ -110,12 +111,12 @@ hr {
 }
 
 
-div h1, div p {
+.form h1, .form p {
   margin-bottom: 24px;
   text-align: center;
 }
 
-div p {
+.form p {
   color: #5D646F;
 }
 
