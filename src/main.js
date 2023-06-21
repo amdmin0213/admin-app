@@ -25,7 +25,6 @@ router.beforeEach(async (to, from, next) => {
     document.body.classList.remove('orange-bg');
   }
   next();
-  console.log(to);
 })
 
 createApp(App)
