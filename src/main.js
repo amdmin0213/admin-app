@@ -4,7 +4,7 @@ import App from './App.vue';
 import UserLogin from './components/UserLogin.vue';
 import UserDashboard from './components/UserDashboard.vue';
 import CourseDetails from './components/CourseDetails.vue';
-import './theme/theme.css';
+import './theme/theme.css'
 
 
 const routes = [

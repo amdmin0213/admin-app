@@ -2,7 +2,7 @@
     <div class="card" @click="$emit('click')">
       <div class="card-body">
         <h5 class="card-title">{{ course.fullname }}</h5>
-        <p class="card-text">{{ course.summary }}</p>
+        <p class="card-text" v-html="course.summary"></p>
         <p class="card-text">{{ courseProgress }}% complete</p>
       </div>
     </div>
@@ -40,6 +40,9 @@
   <style scoped>
   .card {
     /* Add your card styles here */
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 20px;
   }
   </style>
   
