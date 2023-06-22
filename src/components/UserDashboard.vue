@@ -111,8 +111,18 @@ export default {
 .info-section {
   display: flex;
   flex-wrap: wrap;
+  background-color: #f9fafa;
+  padding: 10px;
+  justify-content: space-around;
+  
+  
 }
 .info-card {
-  max-width: 360px;
+  width: 300px;
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0px;
+  background-color: #FFF;
 }
 </style>

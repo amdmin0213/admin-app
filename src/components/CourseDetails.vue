@@ -1,5 +1,6 @@
 <template>
   <div>
+    <img src="https://learn.myllama.co/webservice/pluginfile.php/63/course/overviewfiles/Negotiations%20%20Difficult%20Conversations.jpg?wstoken=99c50aa3c5d4a8e4e1ff2016ba0d6dae" alt="">
   {{course}}
   </div>
 </template>
