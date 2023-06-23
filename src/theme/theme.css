@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+body {
+  background-color: #f9fafa;
+}
+
 .orange-bg {
   background-color: rgb(244, 116, 49);
 }

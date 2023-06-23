@@ -12,7 +12,7 @@ const moodleService = {
       if (response.data.token) {
         localStorage.setItem("token", response.data.token)
         this.token = await response.data.token;
-        // await this.getUserDetails(username);
+        await this.getUserProfile();
         return true;
       }
       return false;
@@ -22,25 +22,30 @@ const moodleService = {
     }
   },
 
-  async getUserDetails(username) {
-    // console.log("abc")
+  async getUserProfile() {
     try {
-      const resp = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?wstoken=${this.token ? this.token : localStorage.getItem('token')}`, {
+      let resp = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?wstoken=${this.token ? this.token : localStorage.getItem('token')}`, {
         params: {
-          'wsfunction': 'core_user_get_users',
-          'criteria': [['username', username]],
+          'wsfunction': 'core_webservice_get_site_info',
         }
       })
+      resp = JSON.parse(convert.xml2json(resp.data));
+      resp = resp.elements[0].elements[0].elements;
+      resp = resp.reduce((userDetails, field) => {
+        userDetails[field.attributes.name] = field.elements[0]?.elements ? field.elements[0].elements[0].text : '';
+        return userDetails;
+      }, {})
+      localStorage.setItem('userid', resp.userid);
+
       return resp;
-      // console.log(resp);
     } catch(error){
-      console.log(error);
+      console.error(error);
     }
   },
 
   async getCourseData() {
     try {
-      const response = await axios.post(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_enrol_get_users_courses&wstoken=${this.token ? this.token : localStorage.getItem('token')}&userid=67`);
+      const response = await axios.post(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_enrol_get_users_courses&wstoken=${this.token ? this.token : localStorage.getItem('token')}&userid=${localStorage.getItem('userid')}`);
       let courses = JSON.parse(convert.xml2json(response.data));
       
       courses = courses.elements[0].elements[0].elements;
@@ -49,7 +54,13 @@ const moodleService = {
       courses = courses.reduce((courses, course) => {
         let courseObject = {};
         course.elements.map(field => {
-          courseObject[field.attributes.name] = field.elements[0]?.elements ?  field.elements[0]?.elements[0].text : "";
+          if(field.attributes.name === "overviewfiles" && field.elements[0].elements){
+            courseObject[field.attributes.name] = field.elements[0].elements[0].elements.reduce((overviewfilesObject, overviewField) => {
+              overviewfilesObject[overviewField.attributes.name] = overviewField.elements[0].elements ? overviewField.elements[0].elements[0].text : '';
+              return overviewfilesObject;
+            }, {})
+          }
+          else courseObject[field.attributes.name] = field.elements[0]?.elements ?  field.elements[0]?.elements[0].text : "";
         })
         if(courseObject["enddate"] > timeStamp) {
           courseObject.status = 'live';
@@ -73,11 +84,9 @@ const moodleService = {
       let response = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_course_get_courses_by_field&field=id&value=${courseId}&wstoken=${this.token ? this.token : localStorage.getItem('token')}`);
       response = JSON.parse(convert.xml2json(response.data)).elements[0].elements[0].elements.filter(element => element.attributes.name == 'courses')[0].elements[0].elements[0].elements;
       response = response.reduce((course, field) => {
-        console.log(field)
         course[field.attributes.name] = field.elements[0].elements ? field.elements[0]?.elements[0].text : '';
         return course;
       }, {})
-      console.log(response)
       return response;
     } catch (error) {
       console.error(error);
@@ -86,7 +95,6 @@ const moodleService = {
   },
 
   async countEnrolledUsers(courseId){
-    console.log(courseId)
     try {
       let response = await axios.get('https://learn.myllama.co/webservice/rest/server.php', {
         params: {
@@ -97,10 +105,8 @@ const moodleService = {
       })
       response = JSON.parse(convert.xml2json(response.data));
       response = response.elements[0].elements[0].elements;
-      console.log(response);
       let users = response.map(user => {
-        console.log(user)
-        return user.elements.reduce((userObject, field) => {
+        let userDetails = user.elements?.reduce((userObject, field) => {
           if(field.attributes.name === 'enrolledcourses'){
             let enrolledCourses = field.elements[0].elements.map(course => {
               return course.elements.reduce((courseObject, field) => {
@@ -112,8 +118,10 @@ const moodleService = {
             userObject[field.attributes.name] = enrolledCourses;
           }
           else userObject[field.attributes.name] = field.elements[0].elements ?  field.elements[0]?.elements[0].text : "";
+
           return userObject;
         }, {});
+        return userDetails;
       })
       return users;
     } catch(error){
