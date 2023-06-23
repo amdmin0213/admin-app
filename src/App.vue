@@ -1,11 +1,16 @@
 <template>
   <div id="app">
-    <router-view />
+    <nav-bar v-if='this.$route.path != "/"' />
+    <router-view />  
   </div>
 </template>
 
 <script>
+import NavBar from './components/NavBar.vue'
 export default {
   name: 'App',
+  components: {
+    NavBar
+  }
 };
 </script>

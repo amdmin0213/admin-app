@@ -1,9 +1,12 @@
 <template>
     <div class="card" @click="$emit('click')">
+      <div class="card-img">
+        <img :src="course.overviewfiles ? course.overviewfiles.fileurl+`?token=${token}`: ''" alt="">
+      </div>
       <div class="card-body">
-        <h5 class="card-title">{{ course.fullname }}</h5>
-        <p class="card-text">{{ course.summary }}</p>
-        <p class="card-text">{{ courseProgress }}% complete</p>
+        <p class="overline">{{ getStartdate(course.startdate) }}</p>
+        <h4 class="card-title">{{ course.fullname }}</h4>
+        <p class="card-text">{{ course.shortname }}</p>
       </div>
     </div>
   </template>
@@ -17,6 +20,11 @@
         type: Object,
         required: true,
       },
+    },
+    data(){
+      return {
+        token: localStorage.getItem('token')
+      }
     },
     computed: {
       courseProgress() {
@@ -34,12 +42,43 @@
         }
       },
     },
+    methods: {
+      getStartdate(startdate){
+        const date = new Date(startdate * 1000);
+        var months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+        return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+      }
+    }
   };
   </script>
   
   <style scoped>
   .card {
-    /* Add your card styles here */
+    padding: 20px;
+    display: flex;
+    align-items: center;
   }
+
+  .card-body {
+    margin: 0px 15px;
+  }
+
+  .overline {
+    font-size: 12px;
+    font-weight: 600;
+    color: #F47431;
+  }
+
+  .card-text {
+    font-size: 14px;
+    color: grey;
+  }
+
+  .card-img img {
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+  }
+  
   </style>
   
