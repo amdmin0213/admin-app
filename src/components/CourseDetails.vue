@@ -115,8 +115,8 @@ hr {
 .course-info {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  /* padding: 10px; */
 }
+
 .info-card {
   width: 280px;
   border: 1px solid grey;

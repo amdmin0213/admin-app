@@ -5,7 +5,7 @@
         <span>Llama</span>
     </div>
     <div class="profile">
-        <button>
+        <button @click="userProfile">
             <img src="https://secure.gravatar.com/avatar/fc25b5644b0dcceb293ca0e215cb9a2b?s=35&amp;d=mm" alt="">
         </button>
     </div>
@@ -19,6 +19,11 @@ export default {
     return {
     };
   },
+  methods: {
+    userProfile() {
+      this.$router.push('/user_profile');
+    }
+  }
 };
 </script>
 <style scoped>

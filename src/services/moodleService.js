@@ -98,7 +98,7 @@ const moodleService = {
     try {
       let response = await axios.get('https://learn.myllama.co/webservice/rest/server.php', {
         params: {
-          'wstoken': this.token ? this.wstoken : localStorage.getItem('token'),
+          'wstoken': localStorage.getItem('token'),
           'wsfunction': 'core_enrol_get_enrolled_users',
           'courseid': courseId
         }
