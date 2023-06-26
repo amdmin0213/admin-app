@@ -31,7 +31,6 @@ export default {
   methods: {
     async getUser(){
       this.user = await moodleService.getUserProfile();
-      console.log(this.user);
     },
     logout() {
         this.$router.push('/')

@@ -25,10 +25,29 @@
     <div class="course-participants">
       <div v-for='participant in enrolledUsers' :key='participant?.id' class="participant-card" @click='openUser(course.id, participant?.id)'>
         <img :src="participant?.profileimageurl" alt="">
-        <h5>{{participant.firstname}} {{participant.lastname}}</h5>
-        <p>{{ participant.username }}</p>
+        <h5>{{ participant?.firstname }} {{ participant?.lastname }}</h5>
+        <p>{{ participant?.username }}</p>
       </div>
+    </div>
 
+    <hr>
+
+    <div class="activity-tracker">
+      <table>
+        <tr>
+          <th>firstname / lastname</th>
+          <th>email</th>
+          <th v-for="activity in Object.values(this.statuses)[0]?.status" :key="activity">{{ activity.modname }}</th>
+        </tr>
+        <tr v-for="activity in Object.values(this.statuses)" :key="activity.email">
+          <td>{{ activity.fullname }}</td>
+          <td>{{ activity.email }}</td>
+          <td v-for='status in activity.status' :key='status.modname'>
+            <input type="checkbox" name="" id="" :checked="status.status">
+          </td>
+        </tr>
+        <tr></tr>
+      </table>
     </div>
   </div>
 </template>
@@ -41,7 +60,8 @@ export default {
     return {
       course: {},
       token: localStorage.getItem('token'),
-      enrolledUsers: []
+      enrolledUsers: [],
+      statuses: {}
     };
   },
   async mounted(){
@@ -51,6 +71,14 @@ export default {
     this.getEnrolledUsers(this.course?.id);
   }, 
   methods: {
+    async getActivitiesCompletionStatus(){
+     const courseId = this.$route.params.id;
+     this.enrolledUsers.map(async (user) => {
+        const resp = await moodleService.getActivitiesCompletionStatus(courseId, user.id);
+        this.statuses[user.id] = {status: await resp};
+        this.statuses[user.id] = {...this.statuses[user.id], fullname: user.fullname, email: user.email };
+     })
+    },
     openUser(id, userid){
       this.$router.push(`/user/${id}/${userid}`);
     },
@@ -71,6 +99,7 @@ export default {
     },
     async getEnrolledUsers(id){
       this.enrolledUsers = await moodleService.countEnrolledUsers(id);
+      await this.getActivitiesCompletionStatus(this.enrolledUsers);
     },
     async getCourseData(id){
       const courses = await moodleService.getCourseData(this.$route.params.userid);
@@ -150,6 +179,15 @@ hr {
 .participant-card:hover {
   background-color: #d8dadb;
   cursor: pointer;
+}
+
+.activity-tracker table {
+  width: 90%;
+}
+
+table td, table th {
+  padding: 10px;
+  text-align: center;
 }
 </style>
   
