@@ -30,8 +30,7 @@ const moodleService = {
           'moodlewsrestformat': 'json',
         }
       })
-      
-      localStorage.setItem('userid', resp.userid);
+      localStorage.setItem('userid', resp.data.userid);
 
       return resp.data;
     } catch(error){
@@ -133,7 +132,7 @@ const moodleService = {
       }, {});
       return statuses;
     } catch (error) {
-      console.error(error);ss
+      console.error(error);
     }
   }
 };
