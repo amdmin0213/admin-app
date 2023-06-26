@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="course-details">
-      <img :src="`https://learn.myllama.co/webservice/pluginfile.php/63/course/overviewfiles/Negotiations%20%20Difficult%20Conversations.jpg?token=${token}`" alt="">
+      <img :src="course?.overviewfiles ? course.overviewfiles.fileurl+`?token=${token}`: ''" alt="">
       <div class="course-info">
         <div class="card-body">
           <p class="overline">{{ getStartdate(course.startdate) }}</p>
@@ -30,11 +30,7 @@
       </div>
 
     </div>
-
   </div>
-
-  
-  
 </template>
 <script>
 import moodleService from '../services/moodleService';
@@ -50,9 +46,9 @@ export default {
   },
   async mounted(){
     const id = this.$route.params.id;
-    this.course = await moodleService.getCourse([id]);
+    this.course = await this.getCourseData(id);
     this.getCourseTimeline(this.course.startdate, this.course.enddate);
-    this.getEnrolledUsers(this.course.id);
+    this.getEnrolledUsers(this.course?.id);
   }, 
   methods: {
     openUser(id, userid){
@@ -75,7 +71,11 @@ export default {
     },
     async getEnrolledUsers(id){
       this.enrolledUsers = await moodleService.countEnrolledUsers(id);
-    }  
+    },
+    async getCourseData(id){
+      const courses = await moodleService.getCourseData(this.$route.params.userid);
+      return courses.find(course => course.id == id);
+    }
   }  
 };
 </script>
