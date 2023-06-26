@@ -191,6 +191,7 @@ hr {
 table td, table th {
   padding: 10px;
   text-align: center;
+  pointer-events: none;
 }
 </style>
   

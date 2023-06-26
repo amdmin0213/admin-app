@@ -60,6 +60,7 @@
     padding: 20px;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   .card-body {
