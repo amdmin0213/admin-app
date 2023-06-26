@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="course-details">
-      <img :src="course?.overviewfiles ? course.overviewfiles.fileurl+`?token=${token}`: ''" alt="">
+      <img :src="course.overviewfiles ? course.overviewfiles.fileurl+`?token=${token}`: require('@/assets/defaultImage.jpg')" alt="" @error="setDefaultImage">
       <div class="course-info">
         <div class="card-body">
           <p class="overline">{{ getStartdate(course.startdate) }}</p>
@@ -71,6 +71,9 @@ export default {
     this.getEnrolledUsers(this.course?.id);
   }, 
   methods: {
+    setDeafaultImage(event) {
+      event.target.src = require('@/assets/defaultImage.jpg')
+    },
     async getActivitiesCompletionStatus(){
      const courseId = this.$route.params.id;
      this.enrolledUsers.map(async (user) => {

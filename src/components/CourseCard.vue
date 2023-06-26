@@ -1,7 +1,7 @@
 <template>
     <div class="card" @click="$emit('click')">
       <div class="card-img">
-        <img :src="course.overviewfiles ? course.overviewfiles.fileurl+`?token=${token}`: ''" alt="">
+        <img :src="course.overviewfiles ? course.overviewfiles.fileurl+`?token=${token}`: ''" alt="" @error="setDeafaultImage">
       </div>
       <div class="card-body">
         <p class="overline">{{ getStartdate(course.startdate) }}</p>
@@ -43,6 +43,9 @@
       },
     },
     methods: {
+      setDeafaultImage(event) {
+        event.target.src = require('@/assets/defaultImage.jpg')
+      },
       getStartdate(startdate){
         const date = new Date(startdate * 1000);
         var months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
