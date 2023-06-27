@@ -1,14 +1,17 @@
 <template>
   <div class="navbar">
     <div class="logo">
-        <span @click="back" class="back-button">&#8592;</span>
+        <i v-if="$route.path != '/dashboard'" @click="back" class='fas fa-angle-left back-button'></i>
         <img src="../assets/logo.webp" alt="">
         <span>Llama</span>
     </div>
     <div class="profile">
-        <button @click="userProfile">
-          <img :src="user.userpictureurl" alt="">
-        </button>
+      <button class="profile-button">
+        <img :src="user.userpictureurl" alt="">
+      </button>
+      <div class="popover-content">
+        <button @click="logout">Logout</button>
+      </div>
     </div>
     
   </div>
@@ -29,8 +32,10 @@ export default {
     back() {
       this.$router.back();
     },
-    userProfile() {
-      this.$router.push('/user_profile');
+    logout() {
+      this.$router.push('/')
+      localStorage.removeItem('token');
+      localStorage.removeItem('userid');
     }
   }
 };
@@ -55,20 +60,43 @@ export default {
   width: 35px;
 }
 
-.profile button, .profile img {
+.profile-button, .profile img {
   border: none;
   outline: none;
   border-radius: 100%;
   height: 35px;
   width: 35px;
+  cursor: pointer;
+}
+
+.profile {
+  cursor: pointer;
 }
 
 .back-button {
-  font-size: 35px;
+  font-size: 30px;
   font-weight: 800;
   cursor: pointer;
-  display: flex;
-  align-items: center;
+  margin-right: 10px;
+}  
+
+.popover-content button {
+  visibility: hidden;
+  z-index: -1;
+  height: 40px;
+  width: 100px;
+  position: absolute;
+  right: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: #FFF;
+  cursor: pointer;
 }
+
+.profile:hover .popover-content button {
+  visibility: visible;
+  z-index: 10;
+}
+
 </style>
   

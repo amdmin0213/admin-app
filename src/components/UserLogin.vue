@@ -53,7 +53,7 @@ export default {
   border-radius: 36px;
 }
 
-.login-img{
+.login-img {
   height: 50px;
   width: 50px;
   display: block;

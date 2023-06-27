@@ -5,7 +5,6 @@ import UserLogin from './components/UserLogin.vue';
 import UserDashboard from './components/UserDashboard.vue';
 import CourseDetails from './components/CourseDetails.vue';
 import UserDetails from './components/UserDetails';
-import UserProfile from './components/UserProfile.vue';
 import './theme/theme.css'
 
 
@@ -14,7 +13,6 @@ const routes = [
   { path: '/dashboard', component: UserDashboard },
   { path: '/course/:id', name: 'CourseDetails', component: CourseDetails },
   { path: '/user/:id/:userid', name: 'userDetails', component: UserDetails },
-  { path: '/user_profile', name: 'userProfile', component: UserProfile }
 ];
 
 const router = createRouter({
