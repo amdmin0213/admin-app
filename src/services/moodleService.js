@@ -27,17 +27,12 @@ const moodleService = {
       let resp = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?wstoken=${this.token ? this.token : localStorage.getItem('token')}`, {
         params: {
           'wsfunction': 'core_webservice_get_site_info',
+          'moodlewsrestformat': 'json',
         }
       })
-      resp = JSON.parse(convert.xml2json(resp.data));
-      resp = resp.elements[0].elements[0].elements;
-      resp = resp.reduce((userDetails, field) => {
-        userDetails[field.attributes.name] = field.elements[0]?.elements ? field.elements[0].elements[0].text : '';
-        return userDetails;
-      }, {})
-      localStorage.setItem('userid', resp.userid);
+      localStorage.setItem('userid', resp.data.userid);
 
-      return resp;
+      return resp.data;
     } catch(error){
       console.error(error);
     }
@@ -98,32 +93,13 @@ const moodleService = {
     try {
       let response = await axios.get('https://learn.myllama.co/webservice/rest/server.php', {
         params: {
-          'wstoken': this.token ? this.wstoken : localStorage.getItem('token'),
+          'wstoken': localStorage.getItem('token'),
           'wsfunction': 'core_enrol_get_enrolled_users',
-          'courseid': courseId
+          'moodlewsrestformat': 'json',
+          'courseid': courseId,
         }
       })
-      response = JSON.parse(convert.xml2json(response.data));
-      response = response.elements[0].elements[0].elements;
-      let users = response.map(user => {
-        let userDetails = user.elements?.reduce((userObject, field) => {
-          if(field.attributes.name === 'enrolledcourses'){
-            let enrolledCourses = field.elements[0].elements.map(course => {
-              return course.elements.reduce((courseObject, field) => {
-                courseObject[field.attributes.name] = field.elements[0].elements ?  field.elements[0]?.elements[0].text : "";
-                return courseObject;
-              }, {});
-              
-            });
-            userObject[field.attributes.name] = enrolledCourses;
-          }
-          else userObject[field.attributes.name] = field.elements[0].elements ?  field.elements[0]?.elements[0].text : "";
-
-          return userObject;
-        }, {});
-        return userDetails;
-      })
-      return users;
+      return response.data;
     } catch(error){
       console.error(error);
     }
@@ -138,6 +114,27 @@ const moodleService = {
       return [];
     }
   },
+
+  async getActivitiesCompletionStatus(courseId, userId) {
+    try {
+      const response = await axios.get('https://learn.myllama.co/webservice/rest/server.php', {
+        params: {
+          'wstoken': localStorage.getItem('token'),
+          'wsfunction': 'core_completion_get_activities_completion_status',
+          'moodlewsrestformat': 'json',
+          'courseid': courseId,
+          'userid': userId
+        }
+      })
+      const statuses = response.data.statuses.reduce((statuses, status) => {
+        statuses[status.cmid] = { status: status.state, modname: status.modname };
+        return statuses;
+      }, {});
+      return statuses;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 };
 
 export default moodleService;
