@@ -38,9 +38,9 @@ const moodleService = {
     }
   },
 
-  async getCourseData() {
+  async getCourseData(userid) {
     try {
-      const response = await axios.post(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_enrol_get_users_courses&wstoken=${this.token ? this.token : localStorage.getItem('token')}&userid=${localStorage.getItem('userid')}`);
+      const response = await axios.post(`https://learn.myllama.co/webservice/rest/server.php?wsfunction=core_enrol_get_users_courses&wstoken=${this.token ? this.token : localStorage.getItem('token')}&userid=${userid ? userid : localStorage.getItem('userid')}`);
       let courses = JSON.parse(convert.xml2json(response.data));
       
       courses = courses.elements[0].elements[0].elements;

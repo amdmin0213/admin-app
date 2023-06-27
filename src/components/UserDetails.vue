@@ -40,26 +40,75 @@
         </div>
       </div>
     </div>
+
+    <hr>
+
+    <div v-if="filterCourses('live').length" class="live-courses">
+      <h2>Active courses</h2>
+      {{filterCourses('completed')}}
+      <div class="courses-wrapper">
+        <div v-for="(course, index) in filterCourses('live')" :key="course.id">
+          <CourseCard 
+            :class="{'card-border' : index !== filterCourses('live').length-1}"
+            :course="course"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div v-if="filterCourses('completed').length" class="completed-courses">
+      <h2>Completed courses</h2>
+      <div class="courses-wrapper">
+        <div v-for="(course, index) in filterCourses('completed')" :key="course.id">
+          <CourseCard 
+            :class="{'card-border' : index !== filterCourses('completed').length-1}"
+            :course="course"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import moodleService from '../services/moodleService';
+import CourseCard from './CourseCard.vue';
 
 export default {
   name: 'UserDetails',
+  components: {
+    CourseCard
+  },
   data() {
     return {
       user: {},
       token: localStorage.getItem('token'),
-      enrolledUsers: []
+      enrolledUsers: [],
+      enrolledCourses: []
     };
   },
-  async mounted(){
+  async created(){
     const id = this.$route.params.id;
     await this.getEnrolledUsers(id);
+    await this.getEnrolledCourses();
     this.getUser();
   }, 
   methods: {
+    async getEnrolledCourses(){
+      this.enrolledCourses = await moodleService.getCourseData(this.$route.params.userid);
+    },
+    filterCourses(type){
+      if(type == 'live') {
+        let liveCourses = this.enrolledCourses.filter(course => {
+          if(course.status == 'live') return true;
+        })
+        return liveCourses;
+      } else if (type == 'completed') {
+        let completedCourses = this.enrolledCourses.filter(course => {
+          if(course.status == 'completed') return true;
+        })
+        return completedCourses;
+      }
+    },
     async getUser(){
       this.user = this.enrolledUsers.find(user => { 
         return user.id == this.$route.params.userid
@@ -121,6 +170,25 @@ export default {
   color: #F47431;
 }
 
+.courses-wrapper {
+  border: 1px solid grey;
+  border-radius: 10px;
+  margin: 20px auto;
+  background-color: #FFF;
+}
+
+.live-courses, .completed-courses {
+  margin: 20px;
+  pointer-events: none;
+}
+
+h2 {
+  margin: 16px 0px;
+}
+
+.card-border {
+  border-bottom: 1px solid grey;
+}
 
 hr {
   height: 2px;
