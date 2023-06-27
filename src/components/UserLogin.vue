@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div>
-      <img class="login-img" src="../assets/LoginPageLogo.png">
+      <img class="login-img" src="../assets/logo.webp">
     </div>
     <div class="form">
       <h1>Welcome!</h1>
@@ -58,7 +58,7 @@ export default {
   width: 50px;
   display: block;
   margin: auto;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .form input {
