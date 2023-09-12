@@ -13,6 +13,8 @@ const moodleService = {
         localStorage.setItem("token", response.data.token)
         this.token = await response.data.token;
         await this.getUserProfile();
+        await this.get_course_grades();
+        await this.get_all_course();
         return true;
       }
       return false;
@@ -134,7 +136,91 @@ const moodleService = {
     } catch (error) {
       console.error(error);
     }
+  },
+
+  // Lists the courses in which a specific user is enrolled.
+async courseEnrolledBySpecificUser() {
+  try {
+    const params = {
+      'wsfunction': 'core_enrol_get_users_courses',
+      'userid': 68,
+      'moodlewsrestformat': 'json',
+    };
+      const response = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?&wstoken=${this.token ? this.token : localStorage.getItem('token')}`,{
+      params: params,
+    });
+      const userList = response.data.users;
+      console.log(response);
+      return userList;
+    } 
+  catch (error) {
+      console.error('Error while fetching user list:', error);
+    }
+ },
+
+ // Lists all users in a course and their completion status for each activity.   
+ async getCourseCompletionStatus() {
+  try {
+      const params = {
+        'wsfunction': 'core_completion_get_course_completion_status',
+        'moodlewsrestformat': 'json',
+        'courseid': 13, 
+        'userid': 2,    
+      };
+        const response = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?&wstoken=${this.token ? this.token : localStorage.getItem('token')}`,{
+        params: params,
+      });
+        const status = response.data;
+        console.log(response);
+        return status;
+      } 
+      catch (error) {
+        console.error(error);
   }
+},
+
+// get all the courses
+async get_all_course() {
+  try {
+    const params = {
+      'wsfunction': 'core_course_get_courses',
+      'moodlewsrestformat': 'json',
+    };
+      const response = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?&wstoken=${this.token ? this.token : localStorage.getItem('token')}`, {
+      params: params,
+    });
+      const courses = response.data;
+      console.log(courses)
+      const courseIds = courses.map(course => course.id); 
+      console.log(courseIds)
+      return courseIds;
+    } 
+  catch (error) {
+      console.error(error);
+      return []; 
+  }
+},
+
+// Get the given user courses final grades
+async get_course_grades() {
+  const courseIds = await this.get_all_course();
+  try {
+    const params = {
+      'wsfunction': 'mod_quiz_get_quizzes_by_courses',
+      'moodlewsrestformat': 'json',
+      'courseids': courseIds, 
+    };
+      const response = await axios.get(`https://learn.myllama.co/webservice/rest/server.php?&wstoken=${this.token ? this.token : localStorage.getItem('token')}`,{
+      params: params,
+    });
+      const progress = response.data;
+      console.log(response);
+      return progress;
+    } 
+ catch (error) {
+      console.error(error);
+  }
+}
 };
 
 export default moodleService;
